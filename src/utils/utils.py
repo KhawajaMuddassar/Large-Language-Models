@@ -209,55 +209,78 @@ def load_weights (gpt, params):
     for idx in range(len(params['blocks'])):
         q_w, k_w, v_w = np.split(
             (params['blocks'][idx]['attn']['c_attn'])['w'], 3, axis=-1 )        
-        gpt.transformer[idx].attention.q.weight = assign(
-            gpt.transformer[idx].attention.q.weight,q_w.T)
-        gpt.transformer[idx].attention.k.weight = assign(
-            gpt.transformer[idx].attention.k.weight, k_w.T)
-        gpt.transformer[idx].attention.v.weight = assign(
-            gpt.transformer[idx].attention.v.weight, v_w.T)
+        gpt.transformer[idx].attention.q.weight = assign(gpt.transformer[idx].attention.q.weight,q_w.T)
+        gpt.transformer[idx].attention.k.weight = assign(gpt.transformer[idx].attention.k.weight, k_w.T)
+        gpt.transformer[idx].attention.v.weight = assign(gpt.transformer[idx].attention.v.weight, v_w.T)
         
         q_b, k_b, v_b = np.split(
             (params['blocks'][idx]['attn']['c_attn'])['b'], 3, axis=-1 )        
-        gpt.transformer[idx].attention.q.bias = assign(
-            gpt.transformer[idx].attention.q.bias, q_b)
-        gpt.transformer[idx].attention.k.bias = assign(
-            gpt.transformer[idx].attention.k.bias, k_b)
-        gpt.transformer[idx].attention.v.bias = assign(
-            gpt.transformer[idx].attention.v.bias, v_b)        
-        gpt.transformer[idx].attention.out_proj.weight = assign(
-            gpt.transformer[idx].attention.out_proj.weight, 
-            params['blocks'][idx]['attn']['c_proj']['w'].T )
-        gpt.transformer[idx].attention.out_proj.bias = assign(
-            gpt.transformer[idx].attention.out_proj.bias,
-            params['blocks'][idx]['attn']['c_proj']['b'] )        
-        gpt.transformer[idx].ff.layers[0].weight = assign(
-            gpt.transformer[idx].ff.layers[0].weight,
-            params['blocks'][idx]['mlp']['c_fc']['w'].T)
-        gpt.transformer[idx].ff.layers[0].bias = assign(
-            gpt.transformer[idx].ff.layers[0].bias,
-            params['blocks'][idx]['mlp']['c_fc']['b'])
-        gpt.transformer[idx].ff.layers[2].weight = assign(
-            gpt.transformer[idx].ff.layers[2].weight,
-            params['blocks'][idx]['mlp']['c_proj']['w'].T)
-        gpt.transformer[idx].ff.layers[2].bias = assign(
-            gpt.transformer[idx].ff.layers[2].bias,
-            params['blocks'][idx]['mlp']['c_proj']['b'])
-        gpt.transformer[idx].norm1.scale = assign(
-            gpt.transformer[idx].norm1.scale,
-            params['blocks'][idx]['ln_1']['g'])
-        gpt.transformer[idx].norm1.shift = assign(
-            gpt.transformer[idx].norm1.shift,
-            params['blocks'][idx]['ln_1']['b'])
-        gpt.transformer[idx].norm2.scale = assign(
-            gpt.transformer[idx].norm2.scale,
-            params['blocks'][idx]['ln_2']['g'])
-        gpt.transformer[idx].norm2.shift = assign(
-            gpt.transformer[idx].norm2.shift,
-            params['blocks'][idx]['ln_2']['b'])
+        gpt.transformer[idx].attention.q.bias = assign(gpt.transformer[idx].attention.q.bias, q_b)
+        gpt.transformer[idx].attention.k.bias = assign(gpt.transformer[idx].attention.k.bias, k_b)
+        gpt.transformer[idx].attention.v.bias = assign(gpt.transformer[idx].attention.v.bias, v_b)        
+        gpt.transformer[idx].attention.out_proj.weight = assign(gpt.transformer[idx].attention.out_proj.weight,
+                                                                params['blocks'][idx]['attn']['c_proj']['w'].T )
+        gpt.transformer[idx].attention.out_proj.bias = assign(gpt.transformer[idx].attention.out_proj.bias,
+                                                              params['blocks'][idx]['attn']['c_proj']['b'] )        
+        gpt.transformer[idx].ff.layers[0].weight = assign(gpt.transformer[idx].ff.layers[0].weight,
+                                                          params['blocks'][idx]['mlp']['c_fc']['w'].T)
+        gpt.transformer[idx].ff.layers[0].bias = assign(gpt.transformer[idx].ff.layers[0].bias,
+                                                        params['blocks'][idx]['mlp']['c_fc']['b'])
+        gpt.transformer[idx].ff.layers[2].weight = assign(gpt.transformer[idx].ff.layers[2].weight,
+                                                          params['blocks'][idx]['mlp']['c_proj']['w'].T)
+        gpt.transformer[idx].ff.layers[2].bias = assign(gpt.transformer[idx].ff.layers[2].bias,
+                                                        params['blocks'][idx]['mlp']['c_proj']['b'])
+        gpt.transformer[idx].norm1.scale = assign(gpt.transformer[idx].norm1.scale,
+                                                  params['blocks'][idx]['ln_1']['g'])
+        gpt.transformer[idx].norm1.shift = assign(gpt.transformer[idx].norm1.shift,
+                                                  params['blocks'][idx]['ln_1']['b'])
+        gpt.transformer[idx].norm2.scale = assign(gpt.transformer[idx].norm2.scale,
+                                                  params['blocks'][idx]['ln_2']['g'])
+        gpt.transformer[idx].norm2.shift = assign(gpt.transformer[idx].norm2.shift,
+                                                  params['blocks'][idx]['ln_2']['b'])
         gpt.nl.scale = assign(gpt.nl.scale, params['g'])
         gpt.nl.shift = assign(gpt.nl.shift, params['b'])
         gpt.output_head.weight = assign(gpt.output_head.weight, params['wte'])
 
-    
-        
+# Hugging Face Model Hub (safetensors)
+def load_weights_hf_st(gpt, params):
+    gpt.position_embeding.weight = assign(gpt.position_embeding.weight, params["wpe.weight"])
+    gpt.token_embeding.weight = assign(gpt.token_embeding.weight, params["wte.weight"])
+
+    for idx in range(len(gpt.transformer)):
+        q_w, k_w, v_w = torch.chunk(
+            params[f"h.{idx}.attn.c_attn.weight"], 3, axis=-1)
+        gpt.transformer[idx].attention.q.weight = assign(gpt.transformer[idx].attention.q.weight, q_w.T)
+        gpt.transformer[idx].attention.k.weight = assign(gpt.transformer[idx].attention.k.weight, k_w.T)
+        gpt.transformer[idx].attention.v.weight = assign(gpt.transformer[idx].attention.v.weight, v_w.T)
+
+        q_b, k_b, v_b = torch.chunk(
+            params[f"h.{idx}.attn.c_attn.bias"], 3, axis=-1)
+        gpt.transformer[idx].attention.q.bias = assign(gpt.transformer[idx].attention.q.bias, q_b)
+        gpt.transformer[idx].attention.k.bias = assign(gpt.transformer[idx].attention.k.bias, k_b)
+        gpt.transformer[idx].attention.v.bias = assign(gpt.transformer[idx].attention.v.bias, v_b)
+
+        gpt.transformer[idx].attention.out_proj.weight = assign(gpt.transformer[idx].attention.out_proj.weight,
+                                                                params[f"h.{idx}.attn.c_proj.weight"].T)
+        gpt.transformer[idx].attention.out_proj.bias = assign(gpt.transformer[idx].attention.out_proj.bias,
+                                                                params[f"h.{idx}.attn.c_proj.bias"])
+
+        gpt.transformer[idx].ff.layers[0].weight = assign(gpt.transformer[idx].ff.layers[0].weight,
+                                                                params[f"h.{idx}.mlp.c_fc.weight"].T)
+        gpt.transformer[idx].ff.layers[0].bias = assign(gpt.transformer[idx].ff.layers[0].bias,
+                                                                params[f"h.{idx}.mlp.c_fc.bias"])
+        gpt.transformer[idx].ff.layers[2].weight = assign(gpt.transformer[idx].ff.layers[2].weight,
+                                                                params[f"h.{idx}.mlp.c_proj.weight"].T)
+        gpt.transformer[idx].ff.layers[2].bias = assign(gpt.transformer[idx].ff.layers[2].bias,
+                                                                params[f"h.{idx}.mlp.c_proj.bias"])
+
+        gpt.transformer[idx].norm1.scale = assign(gpt.transformer[idx].norm1.scale, params[f"h.{idx}.ln_1.weight"])
+        gpt.transformer[idx].norm1.shift = assign(gpt.transformer[idx].norm1.shift, params[f"h.{idx}.ln_1.bias"])
+        gpt.transformer[idx].norm2.scale = assign(gpt.transformer[idx].norm2.scale, params[f"h.{idx}.ln_2.weight"])
+        gpt.transformer[idx].norm2.shift = assign(gpt.transformer[idx].norm2.shift, params[f"h.{idx}.ln_2.bias"])
+
+    gpt.nl.scale = assign(gpt.nl.scale, params["ln_f.weight"])
+    gpt.nl.shift = assign(gpt.nl.shift, params["ln_f.bias"])
+    gpt.output_head.weight = assign(gpt.output_head.weight, params["wte.weight"])
+
     

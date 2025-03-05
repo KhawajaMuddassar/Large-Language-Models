@@ -5,6 +5,7 @@ import json
 import tensorflow as tf 
 from tqdm import tqdm
 import numpy as np
+from safetensors.torch import load_file
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 def load_gpt2(model_size, model_dir):
@@ -113,3 +114,26 @@ def load_gpt2_params_tf_ckpt(ckpt_path, settings):
         last_key = variable_name_parts[-1]
         target_dict[last_key] = variable_array
     return params
+
+def load_gpt2_hf(choose_model):
+    URL_DIR = {
+        "gpt2-small (124M)": "gpt2",         
+        "gpt2-medium (355M)": "gpt2-medium", # issues via `generate`
+        "gpt2-large (774M)": "gpt2-large",   
+        "gpt2-xl (1558M)": "gpt2-xl"         
+    }
+    if choose_model not in URL_DIR:
+        raise ValueError(f"Model '{choose_model}' not found in URL_DIR")
+    url = f"https://huggingface.co/openai-community/{URL_DIR[choose_model]}/resolve/main/model.safetensors"
+    output_dir = "config/HuggingFace"
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    output_file = os.path.join(output_dir, f"model-{URL_DIR[choose_model]}.safetensors")
+    if not os.path.exists(output_file):
+        print(f"Downloading model for {choose_model}...")
+        urllib.request.urlretrieve(url, output_file)
+        print(f"Model {choose_model} downloaded successfully to {output_file}.")
+    else:
+        print(f"Model {choose_model} already exists at {output_file}.")
+    state_dict = load_file(output_file)
+    return state_dict
