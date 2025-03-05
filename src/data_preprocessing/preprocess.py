@@ -31,7 +31,7 @@ class TokenEmbedding(nn.Module):
         self.vocab_size = vocab_size
         self.out_dim = out_dim
         self.context_size = context_size
-        with open('data/raw/the-verdict.txt', 'r') as f:
+        with open('data/raw/the-text.txt', 'r') as f:
             data = f.read()
         self.tokenizer = tiktoken.get_encoding('gpt2')
         self.downloader = dataloader(self.tokenizer, data, max_len=1024, stride=4)  
