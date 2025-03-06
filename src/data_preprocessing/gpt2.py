@@ -1,12 +1,13 @@
 import os
 import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 import urllib.request
 import json
 import tensorflow as tf 
 from tqdm import tqdm
 import numpy as np
 from safetensors.torch import load_file
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+from transformers import GPT2Model
 
 def load_gpt2(model_size, model_dir):
     
@@ -137,3 +138,25 @@ def load_gpt2_hf(choose_model):
         print(f"Model {choose_model} already exists at {output_file}.")
     state_dict = load_file(output_file)
     return state_dict
+
+def load_gpt2_hf_trnf(choose_model):
+    model_names = {
+        "gpt2-small (124M)": "openai-community/gpt2",         
+        "gpt2-medium (355M)": "openai-community/gpt2-medium", 
+        "gpt2-large (774M)": "openai-community/gpt2-large",   
+        "gpt2-xl (1558M)": "openai-community/gpt2-xl"         
+    }
+    if choose_model not in model_names:
+        raise ValueError(f"Model '{choose_model}' not found in Models list")
+    output_dir = "config/HuggingFace/checkpoints"
+    gpt_hf = GPT2Model.from_pretrained(model_names[choose_model], cache_dir=output_dir)    
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+    output_file = os.path.join(output_dir)
+    if not os.path.exists(output_file):
+        print(f"Downloading model for {choose_model}...")
+        urllib.request.urlretrieve(gpt_hf, output_file)
+        print(f"Model {choose_model} downloaded successfully to {output_file}.")
+    else:
+        print(f"Model {choose_model} already exists at {output_file}.")
+    return gpt_hf
