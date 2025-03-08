@@ -1,17 +1,19 @@
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-
+import math
 import torch
 import urllib.request
 import matplotlib.pyplot as plt
 from src.model.gpt_model import GPTModel
-from data_preprocessing.preprocess import dataloader
-from utils.utils import evaluate_model, generate_print, device
-from utils.utils import batch_loss, tokenizer, plot_losses
+from src.data_preprocessing.preprocess import dataloader
+from src.utils.utils import evaluate_model, generate_print, device
+from src.utils.utils import batch_loss, tokenizer, plot_losses, lr_behavier
 
 
 # Train Model 
+orig_bk_ver = False 
+
 def train_model(
     model,
     train_loader,
@@ -23,21 +25,56 @@ def train_model(
     tokenizer ,
     eval_iter,
     eval_freq,
+    warmup_steps,
+    initial_lr=3e-05,
+    min_lr=1e-6
     ):
         
-    train_losses, val_losses, track_tokens_seen = [], [], []
+    train_losses, val_losses, track_tokens_seen, track_lrs = [], [], [], []
     token_seen, global_step = 0, -1 
     
+    # Maximum learning rate from optimizer
+    peak_lr = optimizer.param_groups[0]['lr']
+    
+    # Total iterations
+    total_steps = len(train_loader) * num_epochs
+    
+    # Lr increment durning warmup
+    lr_inc = (peak_lr - initial_lr) / warmup_steps
+        
     for epoch in range(num_epochs):
         model.train()
         for input_batch, target_batch in train_loader:
             optimizer.zero_grad()
+            global_step += 1 
+            # Adjust lr (warmup / cosine annealing)
+            if global_step < warmup_steps:
+                # Linear Warmup
+                lr = initial_lr + global_step * lr_inc
+            else:
+                # cosine annealing after warmup
+                prograss = ((global_step - warmup_steps) / 
+                            (total_steps - warmup_steps) )
+                lr = min_lr + (peak_lr - min_lr) * 0.5 * (1 + math.cos(math.pi * prograss))
+            # apply lr to optimizer 
+            for param_group in optimizer.param_groups:
+                param_group['lr'] = lr
+            track_lrs.append(lr)
+            # loss 
             loss = batch_loss(input_batch, target_batch, model, device)
             loss.backward()
+            
+            # Apply gradient clipping after warmup to avoid exploding graditns 
+            if orig_bk_ver:
+                if global_step > warmup_steps:
+                    torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            else:
+                if global_step >= warmup_steps:
+                    torch.nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
+            
             optimizer.step()
             token_seen += input_batch.numel()
-            global_step += 1 
-            
+                       
             # Optional evaluation 
             if global_step % eval_freq == 0:
                 train_loss, val_loss = evaluate_model(
@@ -49,6 +86,7 @@ def train_model(
                 train_losses.append(train_loss)
                 val_losses.append(val_loss)
                 track_tokens_seen.append(token_seen)
+                # Current Losses
                 print(f'Ep: {epoch+1} (Step: {global_step:06d}): '
                       f'Train Loss: {train_loss:2f}, Val Loss: {val_loss:2f}'
                       )
@@ -91,7 +129,7 @@ def main(gpt_config, settings,device, tokenizer):
     model = GPTModel(gpt_config)
     model.to(device)
     optimizer = torch.optim.AdamW(
-        model.parameters(), lr=settings['learning_rate'], weight_decay=settings['weight_decay']
+        model.parameters(), lr=settings['peak_lr'], weight_decay=settings['weight_decay']
         )
     
     #*********************************
@@ -125,11 +163,15 @@ def main(gpt_config, settings,device, tokenizer):
     # Train Model
     #*********************************
     tokenizer = tokenizer
-    train_losses, val_losses, tokens_seen = train_model(
+    warmup_steps = int(0.2 * (len(train_loader) * settings['num_epochs']))
+    train_losses, val_losses, tokens_seen, lrs = train_model(
     model, train_loader, val_loader, device, optimizer,
-    start_context="it is good to be", num_epochs=settings['num_epochs'],tokenizer=tokenizer,eval_iter=5, eval_freq=1
+    start_context="it is good to be", num_epochs=settings['num_epochs'],tokenizer=tokenizer,eval_iter=5, eval_freq=5,
+    warmup_steps= warmup_steps,
+    initial_lr=settings['init_lr'],
+    min_lr=settings['min_lr']
     )
-    return train_losses, val_losses, tokens_seen, model
+    return train_losses, val_losses, tokens_seen, model, lrs
 
 if __name__ == "__main__":
 
@@ -145,16 +187,19 @@ if __name__ == "__main__":
 
     other_settings = {
         "learning_rate": 5e-4,
-        "num_epochs": 10,
+        "num_epochs": 15,
         "batch_size": 2,
         "weight_decay": 0.1,
-        "num_workers":0
+        "num_workers":0,
+        "peak_lr":0.001,
+        "init_lr": 1e-5,
+        "min_lr": 1e-5
     }
     
     #*********************************
     # Start Training 
     #*********************************
-    train_losses, val_losses, tokens_seen, model = main(gpt_config, other_settings,device, tokenizer)
+    train_losses, val_losses, tokens_seen, model, lrs = main(gpt_config, other_settings,device, tokenizer)
     
     #*********************************
     # After training
@@ -162,6 +207,7 @@ if __name__ == "__main__":
 
     # Plot results
     epochs_tensor = torch.linspace(0, other_settings["num_epochs"], len(train_losses))
+    lr_behavier(lrs)
     plot_losses(epochs_tensor, tokens_seen, train_losses, val_losses)
     plt.savefig("outputs/loss.pdf")
 
