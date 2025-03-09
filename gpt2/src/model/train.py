@@ -53,8 +53,7 @@ def train_model(
                 lr = initial_lr + global_step * lr_inc
             else:
                 # cosine annealing after warmup
-                prograss = ((global_step - warmup_steps) / 
-                            (total_steps - warmup_steps) )
+                prograss = ((global_step - warmup_steps) / (total_steps - warmup_steps) )
                 lr = min_lr + (peak_lr - min_lr) * 0.5 * (1 + math.cos(math.pi * prograss))
             # apply lr to optimizer 
             for param_group in optimizer.param_groups:
@@ -96,7 +95,7 @@ def train_model(
             device,
             start_context
             )
-    return train_losses, val_losses, track_tokens_seen
+    return train_losses, val_losses, track_tokens_seen,track_lrs
         
 
 def main(gpt_config, settings,device, tokenizer):    
