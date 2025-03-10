@@ -3,7 +3,7 @@ import torch.nn as nn
 from src.model.attention import MultiHeadAttention
 import os
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..','Large-Language-Models')))
 
 
 class GPTModel(nn.Module):

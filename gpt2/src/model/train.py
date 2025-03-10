@@ -165,7 +165,7 @@ def main(gpt_config, settings,device, tokenizer):
     warmup_steps = int(0.2 * (len(train_loader) * settings['num_epochs']))
     train_losses, val_losses, tokens_seen, lrs = train_model(
     model, train_loader, val_loader, device, optimizer,
-    start_context="it is good to be", num_epochs=settings['num_epochs'],tokenizer=tokenizer,eval_iter=5, eval_freq=20,
+    start_context="it is good to be", num_epochs=settings['num_epochs'],tokenizer=tokenizer,eval_iter=10, eval_freq=20,
     warmup_steps= warmup_steps,
     initial_lr=settings['init_lr'],
     min_lr=settings['min_lr']
