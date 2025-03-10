@@ -1,6 +1,6 @@
 import os
 import sys
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..','Large-Language-Models')))
 import urllib.request
 import json
 import tensorflow as tf 
@@ -14,7 +14,7 @@ def load_gpt2(model_size, model_dir):
     allowed_size = {"124M","355M","774M","1558M"}
     if model_size not in allowed_size:
         raise ValueError(f'Model size not in {allowed_size}')
-    model_dir = os.path.join('config', model_dir, model_size)
+    model_dir = os.path.join('gpt2/config', model_dir, model_size)
     base_url = 'https://openaipublic.blob.core.windows.net/gpt-2/models'
     backup_base_url = ''
     filenames = [

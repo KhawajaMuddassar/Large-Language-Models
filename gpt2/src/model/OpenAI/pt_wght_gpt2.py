@@ -2,7 +2,7 @@ import os
 import sys
 import torch
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
-from gpt2.src.data_preprocessing.gpt2 import load_gpt2
+from gpt2.src.data_preprocessing.gptweights import load_gpt2
 from gpt2.src.model.gpt_model import  GPTModel
 from gpt2.src.utils.utils import device, load_weights, generate_text
 from gpt2.src.utils.utils import TokenIDs_To_Text, Text_To_TokenIDS, tokenizer
