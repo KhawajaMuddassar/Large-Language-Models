@@ -1,6 +1,6 @@
 # ChatGPT like Interface for interacting with Pretrained LLM
 
-
+![Chainlit UI Sample](https://github.com/KhawajaMuddassar/Large-Language-Models/blob/573d5e3f77880ee49e7b69c34d7f2a926eda5c5d/Pretrained_LLM_app/images/Interactions_Pretrained_OpenAI.PNG)
 
 To develop this user interface, we will utilize open-source resources [Chainlit Python package](https://github.com/Chainlit/chainlit).
 
