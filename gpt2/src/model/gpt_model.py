@@ -1,10 +1,9 @@
-import torch
-import torch.nn as nn
-from src.model.attention import MultiHeadAttention
 import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..','Large-Language-Models')))
-
+import torch
+import torch.nn as nn
+from gpt2.src.model.attention import MultiHeadAttention
 
 class GPTModel(nn.Module):
     def __init__(

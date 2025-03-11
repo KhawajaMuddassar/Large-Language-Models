@@ -165,6 +165,8 @@ if __name__ == '__main__':
         print(f"Best hyperparameters: {best_hparams}")
         print(f"Best Val loss: {best_val_loss} | Training loss {train_loss}")
     
-                
-    
+    # Save and load model
+    torch.save(model.state_dict(), "gpt2/src/model/ModelFiles/GPT2_small_hparam.pth")
+    model = GPTModel(gpt_config)
+    model.load_state_dict(torch.load("gpt2/src/model/ModelFiles/GPT2_small_hparam.pth", weights_only=True))
     
