@@ -69,11 +69,5 @@ class weights:
             model.out_head.weight = assign(model.out_head.weight, params["model.embed_tokens.weight"], "model.embed_tokens.weight")
             print("Model uses weight tying.")
 
-#model = llama3(llama3_config_8B)
-wgt = weights()
-comb_wgt = wgt.combined_weights(model_type='Instruct')
-print(list(comb_wgt.keys())[:15])
-#load_wgt = wgt.load_weights(model,llama3_config_8B, comb_wgt)
-#model.to(device);
-#del comb_wgt  # free up memory
+
         
