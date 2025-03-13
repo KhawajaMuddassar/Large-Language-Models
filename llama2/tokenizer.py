@@ -4,7 +4,7 @@ import os
 import sentencepiece as spm
 
 class hf_Login:
-    def __init__(self, config_path="config.json"):
+    def __init__(self, config_path="llama2/config.json"):
         self.config_path = config_path
         self.access_token = None
 
@@ -27,7 +27,7 @@ class hf_Login:
             self._load_access_token()
         login(token=self.access_token)
 
-    def download_tokenizer(self, repo_id="meta-llama/Llama-2-7b", filename="tokenizer.model", local_dir="Llama-2-7b"):
+    def download_tokenizer(self, repo_id="meta-llama/Llama-2-7b", filename="tokenizer.model", local_dir="llama2/Llama-2-7b"):
         os.makedirs(local_dir, exist_ok=True)
         """Download the tokenizer file from HuggingFace."""
         tokenizer_file = hf_hub_download(
@@ -38,7 +38,7 @@ class hf_Login:
         return tokenizer_file
 
 class LlamaTokenizer:
-    def __init__(self, config_path="config.json", repo_id="meta-llama/Llama-2-7b", filename="tokenizer.model", local_dir="Llama-2-7b"):        
+    def __init__(self, config_path="llama2/config.json", repo_id="meta-llama/Llama-2-7b", filename="tokenizer.model", local_dir="llama2/Llama-2-7b"):        
         self.login_instance = hf_Login(config_path)
         self.login_instance.login_to_huggingface()        
         self.tokenizer_file = self.login_instance.download_tokenizer(repo_id, filename, local_dir)
@@ -47,4 +47,4 @@ class LlamaTokenizer:
     def encode(self, text):
         return self.sp.encode_as_ids(text)
     def decode(self, ids):
-        return self.sp.decode_pieces(ids)
+        return self.sp.decode_pieces(ids)   

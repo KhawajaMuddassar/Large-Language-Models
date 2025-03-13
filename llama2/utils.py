@@ -15,12 +15,24 @@ tokenizer = tiktoken.get_encoding('gpt2')
 
 # Requires ~26 GB of memory
 llama2_config = {
-    "vocab_size": 32000,     # Vocabulary size
+    "vocab_size": 32_000,     # Vocabulary size
     "context_length": 4096,  # Context length
     "emb_dim": 4096,         # Embedding dimension
     "n_heads": 32,           # Number of attention heads
     "n_layers": 32,          # Number of layers
-    "hidden_dim": 11008,     # Size of the intermediate dimension in FeedForward
+    "hidden_dim": 11_008,     # Size of the intermediate dimension in FeedForward
+    "dtype": torch.bfloat16  # Lower-precision dtype to reduce memory usage
+}
+llama3_config_8B = {
+    "vocab_size": 128_256,   # NEW: Larger vocabulary size
+    "context_length": 8192,  # NEW: Larger context length
+    "emb_dim": 4096,         # Embedding dimension
+    "heads": 32,           # Number of attention heads
+    "n_layers": 32,          # Number of layers
+    "hidden_dim": 14_336,    # NEW: Larger size of the intermediate dimension in FeedForward
+    "kv_groups": 8,        # NEW: Key-Value groups for grouped-query attention
+    "rope_base": 500_000.0,  # NEW: The base in RoPE's "theta" was increased to 500_000
+    "rope_freq": None,       # NEW: Additional configuration for adjusting the RoPE frequencies
     "dtype": torch.bfloat16  # Lower-precision dtype to reduce memory usage
 }
 

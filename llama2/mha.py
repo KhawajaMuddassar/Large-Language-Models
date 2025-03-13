@@ -1,6 +1,9 @@
 import torch 
 import torch.nn as nn 
-from utils import rope, rope_params
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..','Large-Language-Models')))
+from llama2.utils import rope, rope_params
 
 class MultiHeadAttention(nn.Module):
     def __init__(self, d_in, d_out, context_length, num_heads, dtype=None):  # ,dropout, num_heads, qkv_bias=False):

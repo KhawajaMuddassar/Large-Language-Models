@@ -1,8 +1,9 @@
 import os
 import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..','Large-Language-Models')))
 import torch
 import torch.nn as nn 
-from mha import MultiHeadAttention
+from llama2.mha import MultiHeadAttention
 
 # Llama2 Class
 class Llama2(nn.Module):
