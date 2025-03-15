@@ -61,11 +61,11 @@ class GroupQueryAttention(nn.Module):
         # (batch, heads, tokens, num_tokens)
         scores = q @ k.transpose(2,3)
         scores.masked_fill_(self.mask.bool()[:tokens, :tokens],-torch.inf)
-        weights = torch.softmax(scores/k.shape[-1]**0.5,dim=-1)
+        weight = torch.softmax(scores/k.shape[-1]**0.5,dim=-1)
         assert k.shape[-1] == self.head_dim
         
         # context Vector (b, num_tokens, num_heads, head_dim)
-        cntx_vec = (weights @ v).transpose(1,2).reshape(batch,tokens,self.d_out)
+        cntx_vec = (weight @ v).transpose(1,2).reshape(batch,tokens,self.d_out)
         cntx_vec = self.out_proj(cntx_vec)
         return cntx_vec
 

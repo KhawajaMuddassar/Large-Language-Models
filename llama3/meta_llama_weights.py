@@ -7,8 +7,7 @@ from llama2.tokenizer import hf_Login
 
 class weights:
     def __init__(self,):
-        self.login = hf_Login()
-        
+        self.login = hf_Login()        
     def combined_weights(self,model_type):
         comb_weights = {}
         for i in range(1,5):
@@ -37,36 +36,36 @@ class weights:
             return torch.nn.Parameter(torch.tensor(right))
         
     def load_weights(self,model, param_config, params ):
-        model.tok_emb.weight = assign(model.tok_emb.weight, params["model.embed_tokens.weight"], "model.embed_tokens.weight")
-        assign = assign()        
+        model.tok_emb.weight = self.assign(model.tok_emb.weight, params["model.embed_tokens.weight"], "model.embed_tokens.weight")
+                      
         for l in range(param_config["n_layers"]):
             # Load attention weights
-            model.trf_blocks[l].att.W_query.weight = assign(model.trf_blocks[l].att.W_query.weight,
+            model.trf_blocks[l].att.q_w.weight = self.assign(model.trf_blocks[l].att.q_w.weight,
                                                      params[f"model.layers.{l}.self_attn.q_proj.weight"],f"model.layers.{l}.self_attn.q_proj.weight")
-            model.trf_blocks[l].att.W_key.weight = assign(model.trf_blocks[l].att.W_key.weight,
+            model.trf_blocks[l].att.k_w.weight = self.assign(model.trf_blocks[l].att.k_w.weight,
                                                     params[f"model.layers.{l}.self_attn.k_proj.weight"],f"model.layers.{l}.self_attn.k_proj.weight")
-            model.trf_blocks[l].att.W_value.weight = assign(model.trf_blocks[l].att.W_value.weight,
+            model.trf_blocks[l].att.v_w.weight = self.assign(model.trf_blocks[l].att.v_w.weight,
                                                     params[f"model.layers.{l}.self_attn.v_proj.weight"],f"model.layers.{l}.self_attn.v_proj.weight")
-            model.trf_blocks[l].att.out_proj.weight = assign(model.trf_blocks[l].att.out_proj.weight,
+            model.trf_blocks[l].att.out_proj.weight = self.assign(model.trf_blocks[l].att.out_proj.weight,
                                                     params[f"model.layers.{l}.self_attn.o_proj.weight"],f"model.layers.{l}.self_attn.o_proj.weight")
-            model.trf_blocks[l].norm1.weight = assign(model.trf_blocks[l].norm1.weight,
+            model.trf_blocks[l].norm1.weights = self.assign(model.trf_blocks[l].norm1.weights,
                                                     params[f"model.layers.{l}.input_layernorm.weight"],f"model.layers.{l}.input_layernorm.weight")
             # Load FeedForward weights
-            model.trf_blocks[l].ff.fc1.weight = assign(model.trf_blocks[l].ff.fc1.weight,
+            model.trf_blocks[l].ff.fc1.weight = self.assign(model.trf_blocks[l].ff.fc1.weight,
                                                     params[f"model.layers.{l}.mlp.gate_proj.weight"],f"model.layers.{l}.mlp.gate_proj.weight")
-            model.trf_blocks[l].ff.fc2.weight = assign(model.trf_blocks[l].ff.fc2.weight,
+            model.trf_blocks[l].ff.fc2.weight = self.assign(model.trf_blocks[l].ff.fc2.weight,
                                                     params[f"model.layers.{l}.mlp.up_proj.weight"],f"model.layers.{l}.mlp.up_proj.weight")
-            model.trf_blocks[l].ff.fc3.weight = assign(model.trf_blocks[l].ff.fc3.weight,
+            model.trf_blocks[l].ff.fc3.weight = self.assign(model.trf_blocks[l].ff.fc3.weight,
                                                     params[f"model.layers.{l}.mlp.down_proj.weight"],f"model.layers.{l}.mlp.down_proj.weight")
-            model.trf_blocks[l].norm2.weight = assign(model.trf_blocks[l].norm2.weight,
+            model.trf_blocks[l].norm2.weights = self.assign(model.trf_blocks[l].norm2.weights,
                                                     params[f"model.layers.{l}.post_attention_layernorm.weight"],f"model.layers.{l}.post_attention_layernorm.weight")
         # Load output layer weights
-        model.final_norm.weight = assign(model.final_norm.weight, params["model.norm.weight"], "model.norm.weight")
+        model.nl.weights = self.assign(model.nl.weights, params["model.norm.weight"], "model.norm.weight")
             
         if "lm_head.weight" in params.keys():
-            model.out_head.weight = assign(model.out_head.weight, params["lm_head.weight"], "lm_head.weight")
+            model.output_head.weight = self.assign(model.output_head.weight, params["lm_head.weight"], "lm_head.weight")
         else:
-            model.out_head.weight = assign(model.out_head.weight, params["model.embed_tokens.weight"], "model.embed_tokens.weight")
+            model.output_head.weight = self.assign(model.output_head.weight, params["model.embed_tokens.weight"], "model.embed_tokens.weight")
             print("Model uses weight tying.")
 
 

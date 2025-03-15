@@ -11,7 +11,7 @@ class llama3(nn.Module):
     def __init__(self, cfg):
         super().__init__()
         self.tok_emb = nn.Embedding(cfg['vocab_size'],cfg['emb_dim'],dtype=cfg['dtype'] )
-        self.trf_blk = nn.Sequential(
+        self.trf_blocks = nn.Sequential(
             *[TransformerBlock(cfg) for _ in range(cfg['n_layers'])]
         )
         self.nl = RMSNorm(cfg['emb_dim'], eps=1e-5)
@@ -19,7 +19,7 @@ class llama3(nn.Module):
     def forward(self, idx):
         tok_emb = self.tok_emb(idx)
         x = tok_emb
-        x = self.trf_blk(x)
+        x = self.trf_blocks(x)
         x = self.nl(x)
         logits = self.output_head(x.to(torch.bfloat16))
         return logits 
@@ -27,7 +27,7 @@ class llama3(nn.Module):
 class TransformerBlock(nn.Module):
     def __init__(self, cfg):
         super().__init__()
-        self.attn = GroupQueryAttention(
+        self.att = GroupQueryAttention(
             d_in=cfg["emb_dim"],
             d_out=cfg["emb_dim"],
             context_length=cfg["context_length"],
@@ -44,7 +44,7 @@ class TransformerBlock(nn.Module):
     def forward(self, x):        
         shortcut = x
         x = self.norm1(x)
-        x = self.attn(x.to(torch.bfloat16))   # [batch_size, tokens, emb_size]
+        x = self.att(x.to(torch.bfloat16))   # [batch_size, tokens, emb_size]
         x = x + shortcut        
         shortcut = x
         x = self.norm2(x)
