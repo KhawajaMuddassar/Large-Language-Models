@@ -24,16 +24,51 @@ llama2_config = {
     "dtype": torch.bfloat16  # Lower-precision dtype to reduce memory usage
 }
 llama3_config_8B = {
-    "vocab_size": 128_256,   # NEW: Larger vocabulary size
-    "context_length": 8192,  # NEW: Larger context length
+    "vocab_size": 128_256,   # Larger vocabulary size
+    "context_length": 8192,  # Larger context length
     "emb_dim": 4096,         # Embedding dimension
-    "heads": 32,           # Number of attention heads
+    "heads": 32,             # Number of attention heads
     "n_layers": 32,          # Number of layers
-    "hidden_dim": 14_336,    # NEW: Larger size of the intermediate dimension in FeedForward
-    "kv_groups": 8,        # NEW: Key-Value groups for grouped-query attention
-    "rope_base": 500_000.0,  # NEW: The base in RoPE's "theta" was increased to 500_000
-    "rope_freq": None,       # NEW: Additional configuration for adjusting the RoPE frequencies
+    "hidden_dim": 14_336,    # Larger size of the intermediate dimension in FeedForward
+    "kv_groups": 8,          # Key-Value groups for grouped-query attention
+    "rope_base": 500_000.0,  # The base in RoPE's "theta" was increased to 500_000
+    "rope_freq": None,       # Additional configuration for adjusting the RoPE frequencies
     "dtype": torch.bfloat16  # Lower-precision dtype to reduce memory usage
+}
+
+llama31_config = {
+    "vocab_size": 128_256,      # Vocabulary size
+    "context_length": 131_072,  # Larger supported context length
+    "emb_dim": 4096,            # Embedding dimension
+    "heads": 32,              # Number of attention heads
+    "n_layers": 32,             # Number of layers
+    "hidden_dim": 14_336,       # Size of the intermediate dimension in FeedForward
+    "kv_groups": 8,           # Key-Value groups for grouped-query attention
+    "rope_base": 500_000.0,     # The base in RoPE's "theta"
+    "dtype": torch.bfloat16,    # Lower-precision dtype to reduce memory usagey
+    "rope_freq": {              # RoPE frequency scaling
+        "factor": 8.0,
+        "low_freq_factor": 1.0,
+        "high_freq_factor": 4.0,
+        "original_context_length": 8192,
+    }
+}
+llama32_config = {
+    "vocab_size": 128_256,      # Vocabulary size
+    "context_length": 131_072,  # Context length
+    "emb_dim": 2048,            # Half the embedding dimension
+    "heads": 32,              # Number of attention heads
+    "n_layers": 16,             # Half the number of layers
+    "hidden_dim": 8192,         # Almost half the size of the intermediate dimension in FeedForward
+    "kv_groups": 8,           # Key-Value groups for grouped-query attention
+    "rope_base": 500_000.0,     # The base in RoPE's "theta"
+    "dtype": torch.bfloat16,    # Lower-precision dtype to reduce memory usage
+    "rope_freq": {              # RoPE frequency scaling
+        "factor": 32.0,         # Adjustment of the rescaling factor
+        "low_freq_factor": 1.0,
+        "high_freq_factor": 4.0,
+        "original_context_length": 8192,
+    }
 }
 
 # Rotary Position Embeddings Parameters 
