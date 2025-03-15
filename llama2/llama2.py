@@ -50,7 +50,7 @@ class FeedForwardNetwork(nn.Module):
         super().__init__()
         self.fc1 = nn.Linear(cfg['emb_dim'], cfg['hidden_dim'],dtype=cfg['dtype'],bias=False)
         self.fc2 = nn.Linear(cfg['emb_dim'], cfg['hidden_dim'],dtype=cfg['dtype'],bias=False)
-        self.fc3 = nn.Linear(cfg['emb_dim'], cfg['hidden_dim'],dtype=cfg['dtype'],bias=False)
+        self.fc3 = nn.Linear(cfg['hidden_dim'], cfg['emb_dim'], dtype=cfg['dtype'],bias=False)
         self.silu = SiLU()
     def forward(self, x):
         x_fc1 = self.fc1(x)
