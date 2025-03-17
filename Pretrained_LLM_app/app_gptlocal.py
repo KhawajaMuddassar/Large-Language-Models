@@ -4,9 +4,9 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.
 from pathlib import Path
 import torch, tiktoken
 import chainlit
-from gpt2.src.utils.utils import generate_text, Text_To_TokenIDS, TokenIDs_To_Text
-from gpt2.src.utils.utils import device
-from gpt2.src.model.gpt_model import GPTModel
+from gpt.utils import generate_text, Text_To_TokenIDS, TokenIDs_To_Text
+from gpt.utils import device
+from gpt.gpt_model import GPTModel
 device = device
 
 def get_model():
@@ -21,9 +21,9 @@ def get_model():
         "qkv_bias": False       # Query-key-value bias
     }
     tokenizer = tiktoken.get_encoding("gpt2")
-    model_path = Path("..") / "Large-Language-Models"/"gpt2" / "src" / "model" / "ModelFiles" / "GPT2_small.pth"
+    model_path = Path("..") / "Large-Language-Models" / "gpt" / "selftrainedmodel" / "GPT2_small.pth"
     if not model_path.exists():
-        print(f"Could not find the {model_path} file. Please run 'Large-Language-Models/gpt2/src/model/train.py or train_hparam.py' to get .pth file.")
+        print(f"Could not find the {model_path} file. Please run 'Large-Language-Models/gpt/train.py or train_hparam.py' to get .pth file.")
         sys.exit()
     checkpoint = torch.load(model_path, weights_only=True)
     model = GPTModel(gpt_config)
