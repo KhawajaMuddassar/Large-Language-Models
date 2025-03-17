@@ -2,7 +2,7 @@ import os
 import sys
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..','Large-Language-Models')))
 import torch , json
-from gptweights import load_gpt2, load_gpt2_hf, load_gpt2_hf_trnf
+from gpt.gptweights import load_gpt2, load_gpt2_hf, load_gpt2_hf_trnf
 
 def main(model_config, input_prompt, model_size,device,tokenizer, weight_type):    
     from gpt_model import  GPTModel
