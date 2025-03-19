@@ -5,10 +5,10 @@ import torch , json
 from gpt.gptweights import load_gpt2, load_gpt2_hf, load_gpt2_hf_trnf
 
 def main(model_config, input_prompt, model_size,device,tokenizer, weight_type):    
-    from gpt_model import  GPTModel
+    from gpt.gpt_model import  GPTModel
     from llama2.utils import model_memory_size
-    from utils import device, load_weights, load_weights_hf_trnf,load_weights_hf_st
-    from utils import TokenIDs_To_Text, Text_To_TokenIDS,generate_text
+    from gpt.utils import device, load_weights, load_weights_hf_trnf,load_weights_hf_st
+    from gpt.utils import TokenIDs_To_Text, Text_To_TokenIDS,generate_text
     torch.manual_seed(123)
     if weight_type == 'OpenAI':
         settings, params = load_gpt2(model_size, models_dir='gpt')
@@ -47,7 +47,7 @@ def main(model_config, input_prompt, model_size,device,tokenizer, weight_type):
     print("Output text:", TokenIDs_To_Text(token_ids, tokenizer))    
 
 if __name__ == '__main__':
-    from utils import tokenizer,run, device
+    from gpt.utils import tokenizer,run, device
     try:
         with open('gpt/model_config.json', "r") as config_file:
             config = json.load(config_file)

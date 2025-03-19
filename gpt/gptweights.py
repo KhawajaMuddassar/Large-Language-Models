@@ -12,20 +12,15 @@ from transformers import GPT2Model
 def load_gpt2(choose_model, models_dir):
     model_size = ""
     model_names = {
-        "gpt2-small",         
-        "gpt2-medium", 
-        "gpt2-large",   
-        "gpt2-xl"
-    }
-    allowed_sizes = ("124M", "355M", "774M", "1558M")
-    model_size_mapping = dict(zip(model_names, allowed_sizes))
-    for model, size in model_size_mapping.items():
-        if model == choose_model:
-            model_size += size+" "    
+        "gpt2-small" : "124M" ,         
+        "gpt2-medium" : "355M", 
+        "gpt2-large" : "774M",   
+        "gpt2-xl" : "1558M"
+    }    
     if choose_model not in model_names:
-        raise ValueError(f'Model size not in {model_names}')
-    model_size = model_size.strip()
-       
+        raise ValueError(f'Model size not in {choose_model}. Please choose from {model_names}.')
+    model_size = model_names[choose_model]       
+    
     model_dir = os.path.join( models_dir, choose_model)
     base_url = 'https://openaipublic.blob.core.windows.net/gpt-2/models'
     backup_base_url = ''
