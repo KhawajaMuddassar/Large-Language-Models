@@ -67,10 +67,10 @@ Once the server is running, you can access the chat app in your browser at http:
 ## Example Interaction (Screenshots)
 Below is an example of the chat interface where users can interact with the models:
 
-![Customer Sentiment Classifier](SentimentClassifier\ClassifierApp\static\images\app_.PNG)
+![Customer Sentiment Classifier](https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/SentimentClassifier/ClassifierApp/static/images/app_.PNG)
 
 # Video Demonstration
 Here is a video showing the demo of how the chat app works and how users can interact with the sentiment classifier:
-![Watch Demo Video](SentimentClassifier\ClassifierApp\static\images\SentimentClassifier.mp4)
+![Watch Demo Video](https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/SentimentClassifier/ClassifierApp/static/images/SentimentClassifier.mp4)
 
 
