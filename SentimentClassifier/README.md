@@ -71,7 +71,6 @@ Below is an example of the chat interface where users can interact with the mode
 
 # Video Demonstration
 Here is a video showing the demo of how the chat app works and how users can interact with the sentiment classifier:
-[![Watch Demo Video](https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/SentimentClassifier/ClassifierApp/static/images/app_.PNG)]
-(https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/SentimentClassifier/ClassifierApp/static/images/SentimentClassifier.mp4)
+[![Watch Demo Video](https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/SentimentClassifier/ClassifierApp/static/images/app_.PNG)](https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/SentimentClassifier/ClassifierApp/static/images/SentimentClassifier.mp4)
 
 
