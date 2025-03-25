@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Model Selector</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #e9ecef;
+            color: #495057;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .chat-container {
+            max-width: 700px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            font-size: 16px;
+        }
+
+        .logos {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .logos img {
+            height: 40px;
+            width: auto;
+            margin-right: 15px;
+        }
+
+        h2 {
+            font-size: 24px;
+            font-weight: 600;
+            color: #343a40;
+            text-align: center;
+            margin-top: 0;
+        }
+
+        .chat-box {
+            height: 350px;
+            overflow-y: auto;
+            border: 1px solid #ced4da;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #343a40;
+        }
+
+        .input-box {
+            width: 100%;
+            padding: 12px;
+            margin-top: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 8px;
+            background-color: #f8f9fa;
+            font-size: 16px;
+            color: #495057;
+        }
+
+        .input-box:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .model-selector {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .model-selector select {
+            padding: 12px;
+            font-size: 16px;
+            border-radius: 8px;
+            border: 1px solid #ced4da;
+            background-color: #f8f9fa;
+            color: #495057;
+        }
+
+        .model-selector select:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        button {
+            padding: 12px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        button:focus {
+            outline: none;
+            border: 2px solid #0056b3;
+        }
+
+        /* Pulsation effect */
+        @keyframes pulsate {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .thinking {
+            font-style: italic;
+            color: #0056b3;
+            animation: pulsate 1s infinite;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2>Customer Sentiment Classifiers</h2>
+        <div class="logos">
+            <img src="{{ url_for('static', filename='images/chatgpt-logo.jpg') }}" alt="ChatGPT Logo">
+            <img src="{{ url_for('static', filename='images/Bert_logo.png') }}" alt="BERT Logo">
+            <img src="{{ url_for('static', filename='images/meta_ai.png') }}" alt="BERT Logo">
+        </div>
+        
+        <div class="model-selector">
+            <select id="modelSelect">
+                <option value="GPT2-Classifier">GPT2-Classifier</option>
+                <option value="Roberta-Classifier">Roberta-Classifier</option>
+                <option value="BERT-Classifier">BERT-Classifier</option>
+            </select>
+            <button id="startChat">Start Chat</button>
+        </div>
+
+        <div class="chat-box" id="chatBox"></div>
+
+        <textarea class="input-box" id="userInput" placeholder="Type your message..."></textarea>
+        <button onclick="sendMessage()">Send</button>
+    </div>
+
+    <script>
+        // Mapping model to person name
+        const modelToPerson = {
+            "GPT2-Classifier": "Karim Khan",
+            "Roberta-Classifier": "Hafsah Khawaja",
+            "BERT-Classifier": "Hamnah Khawaja", 
+        };
+
+        let currentModel = 'GPT2-Classifier'; // Default model
+
+        document.getElementById('modelSelect').addEventListener('change', function() {
+            currentModel = this.value;
+        });
+
+        document.getElementById('startChat').addEventListener('click', function() {
+            startChatWithDelay(currentModel);
+        });
+
+        // Display default message as soon as page loads
+        window.onload = function() {
+            appendMessage('System', 'Hello! I am ready to assist you with customer sentiment classification. You can ask me to classify any sentiment as Positive or Negative.');
+        };
+
+        function startChatWithDelay(model) {
+            const chatBox = document.getElementById('chatBox');
+
+            // Get the agent's name for the selected model
+            const agentName = modelToPerson[model] || "Anonymous";
+
+            // Show "Please wait, assigning agent..." message with pulsation
+            chatBox.innerHTML = `<p class="thinking">Please wait, assigning agent: <strong>${agentName}</strong>...</p>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            // Simulate 10 second wait before starting chat
+            setTimeout(function() {
+                // Remove the waiting message
+                const thinkingMessage = document.querySelector('.thinking');
+                if (thinkingMessage) {
+                    thinkingMessage.remove();
+                }
+
+                // Start the chat after the delay
+                startChat(model);
+            }, 10000);  // 10 seconds delay
+        }
+
+        function startChat(model) {
+            document.getElementById('chatBox').innerHTML = '';
+            appendMessage('System', `You have selected ${model}. Start chatting!`);
+        }
+
+        function appendMessage(sender, message) {
+            const chatBox = document.getElementById('chatBox');
+            chatBox.innerHTML += `<p><strong>${sender}:</strong> ${message}</p>`;
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function sendMessage() {
+            const userInput = document.getElementById('userInput').value;
+            if (userInput.trim()) {
+                appendMessage('User', userInput);
+                document.getElementById('userInput').value = '';
+
+                // Show thinking message
+                const thinkingMessage = `<p class="thinking">Thinking...</p>`;
+                document.getElementById('chatBox').innerHTML += thinkingMessage;
+                document.getElementById('chatBox').scrollTop = document.getElementById('chatBox').scrollHeight;
+
+                // Simulate waiting time and then get response
+                getResponseFromModel(userInput, currentModel);
+            }
+        }
+
+        function getResponseFromModel(message, model) {
+            fetch('/get_response', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ model: model, message: message })
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Remove the thinking message
+                const thinkingMessage = document.querySelector('.thinking');
+                if (thinkingMessage) {
+                    thinkingMessage.remove();
+                }
+
+                // Get the correct person name from the modelToPerson object
+                const personName = modelToPerson[model] || "Anonymous";
+
+                // Append response with the person's name
+                appendMessage(personName, data.response);
+            })
+            .catch(err => {
+                // Remove the thinking message if error occurs
+                const thinkingMessage = document.querySelector('.thinking');
+                if (thinkingMessage) {
+                    thinkingMessage.remove();
+                }
+                appendMessage('Bot', 'Sorry, there was an error.');
+            });
+        }
+    </script>
+
+</body>
+</html>
