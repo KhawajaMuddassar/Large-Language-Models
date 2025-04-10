@@ -62,4 +62,4 @@ Below is an example of the chat interface where users can interact with the mode
 
 # Video Demonstration
 Here is a video showing the demo of how the chat app works and how users can interact with the sentiment classifier:
-[![Watch Demo Video](https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/PersonalAssistant/app/img/app.PNG)](<video controls src="https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/PersonalAssistant/app/img/Personal%20Assistant.mp4" title=".mp4"></video>)
+(<video controls src="https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/PersonalAssistant/app/img/Personal%20Assistant.mp4" title=".mp4"></video>)
