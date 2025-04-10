@@ -58,8 +58,8 @@ Ensure you have the following dependencies installed:
 ## Example Interaction (Screenshots)
 Below is an example of the chat interface where users can interact with the models:
 
-![Intelligent Language Assistant]()
+![Intelligent Language Assistant](https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/PersonalAssistant/app/img/app.PNG)
 
 # Video Demonstration
 Here is a video showing the demo of how the chat app works and how users can interact with the sentiment classifier:
-[![Watch Demo Video](.PNG)](.mp4)
+[![Watch Demo Video](https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/PersonalAssistant/app/img/app.PNG)](<video controls src="https://github.com/KhawajaMuddassar/Large-Language-Models/blob/main/PersonalAssistant/app/img/Personal%20Assistant.mp4" title=".mp4"></video>)
