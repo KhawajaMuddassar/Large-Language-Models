@@ -13,7 +13,7 @@ class get_gpt:
     def download_and_load_gpt(
         self,
         choose_model,
-        models_dir='ChatAssistant/model/model_weights'
+        models_dir='PersonalAssistant/model/model_weights'
         ):
         model_size = ""
         model_names = {

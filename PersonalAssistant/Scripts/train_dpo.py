@@ -14,12 +14,12 @@ from utils import (dpo_batch_loss,
 class train_dpo:
     def __init__(self,):
         device=torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.instruction_data = 'ChatAssistant/data/processed/ollama_data_dedup.json'
-        self.finetuned_model_path = 'ChatAssistant/model/modelfiles/FT_Model.pth'
-        self.json_config = 'ChatAssistant/model_config.json'
+        self.instruction_data = 'PersonalAssistant/data/processed/ollama_data_dedup.json'
+        self.finetuned_model_path = 'PersonalAssistant/model/modelfiles/FT_Model.pth'
+        self.json_config = 'PersonalAssistant/model_config.json'
         self.tokenizer = tiktoken.get_encoding('gpt2')
         self.num_epochs = 1
-        self.policy_model_path = 'ChatAssistant/model/modelfiles/dpo_Model.pth'
+        self.policy_model_path = 'PersonalAssistant/model/modelfiles/dpo_Model.pth'
         self.policy_model, self.reference_model = self.models()
         with open(self.instruction_data, 'r', encoding='utf-8') as f:
             data = json.load(f)

@@ -232,7 +232,7 @@ def generate_text_simple(model, idx, max_new_tokens, context_size):
     return idx
 
 def plot_losses(epochs_seen, tokens_seen, train_losses, val_losses):
-    os.makedirs('ChatAssistant/plots', exist_ok=True)
+    os.makedirs('PersonalAssistant/plots', exist_ok=True)
     fig, ax1 = plt.subplots(figsize=(5, 3))
     ax1.plot(epochs_seen, train_losses, label="Training loss")
     ax1.plot(epochs_seen, val_losses, linestyle="-.", label="Validation loss")
@@ -247,11 +247,11 @@ def plot_losses(epochs_seen, tokens_seen, train_losses, val_losses):
     ax2.set_xlabel("Tokens seen")
 
     fig.tight_layout()
-    plt.savefig("ChatAssistant/plots/loss-plot.pdf")
+    plt.savefig("PersonalAssistant/plots/loss-plot.pdf")
     plt.show()
 
 def dpo_plot_losses(epochs_seen, tokens_seen, train_losses, val_losses,fig_loc):
-    os.makedirs('ChatAssistant/plots', exist_ok=True)
+    os.makedirs('PersonalAssistant/plots', exist_ok=True)
     fig, ax1 = plt.subplots(figsize=(5, 3))
     ax1.plot(epochs_seen, train_losses, label="Training loss")
     ax1.plot(epochs_seen, val_losses, linestyle="-.", label="Validation loss")

@@ -53,8 +53,8 @@ execution_time_minutes = (end_time - start_time) / 60
 print(f"Training completed in {execution_time_minutes:.2f} minutes.")
 
 # Save Model
-os.makedirs('ChatAssistant/model/modelfiles',exist_ok=True)
-torch.save(model.state_dict(), 'ChatAssistant/model/modelfiles/FT_Model.pth')
+os.makedirs('PersonalAssistant/model/modelfiles',exist_ok=True)
+torch.save(model.state_dict(), 'PersonalAssistant/model/modelfiles/FT_Model.pth')
 print(f"FT Model saved ")
 
 #Plot losses

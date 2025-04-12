@@ -195,12 +195,12 @@ if __name__ == '__main__':
         setup_and_run_ollama()
         is_ollama_running()
         
-    alpaca_file_dedup = 'ChatAssistant/data/processed/alpaca_data_dedup.json'           
-    ollama_file = "ChatAssistant/data/raw/ollama_data.json"  
+    alpaca_file_dedup = 'PersonalAssistant/data/processed/alpaca_data_dedup.json'           
+    ollama_file = "PersonalAssistant/data/raw/ollama_data.json"  
     if not os.path.exists(ollama_file):
         with open(ollama_file, 'w') as file:
             json.dump({}, file)
-    ollama_file_dedup = "ChatAssistant/data/processed/ollama_data_dedup.json"
+    ollama_file_dedup = "PersonalAssistant/data/processed/ollama_data_dedup.json"
     
     # Generate Ollama instructions
     with open(alpaca_file_dedup, "r") as file:

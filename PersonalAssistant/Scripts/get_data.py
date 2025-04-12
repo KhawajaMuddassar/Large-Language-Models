@@ -11,11 +11,11 @@ from tqdm import tqdm
 
 class GetData:
     def __init__(self,):
-        os.makedirs('ChatAssistant/data/processed', exist_ok=True)
-        os.makedirs('ChatAssistant/data/raw', exist_ok=True)    
+        os.makedirs('PersonalAssistant/data/processed', exist_ok=True)
+        os.makedirs('PersonalAssistant/data/raw', exist_ok=True)    
         self.alpaca_url = 'https://raw.githubusercontent.com/tatsu-lab/stanford_alpaca/refs/heads/main/alpaca_data.json'    
-        self.alpaca_file = 'ChatAssistant/data/raw/alpaca_data.json'        
-        self.alpaca_file_dedup = 'ChatAssistant/data/processed/alpaca_data_dedup.json'
+        self.alpaca_file = 'PersonalAssistant/data/raw/alpaca_data.json'        
+        self.alpaca_file_dedup = 'PersonalAssistant/data/processed/alpaca_data_dedup.json'
         
     def run(self,):
         self.get_alpaca_data()
@@ -109,7 +109,7 @@ class GetData:
 
 if __name__ == '__main__':
     GetData().get_alpaca_data()
-    alpaca_file = 'ChatAssistant/data/raw/alpaca_data.json'
+    alpaca_file = 'PersonalAssistant/data/raw/alpaca_data.json'
     with open(alpaca_file, 'r') as file:
             json_alpaca_full = json.load(file)[:1100]
             json_alpaca = json_alpaca_full
